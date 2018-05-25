@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>资源列表</title>
+    <link rel="stylesheet" href="/plugins/layui/css/layui.css" />
+    <link rel="stylesheet" href="/css/public.css" />
+</head>
+<body class="child-body">
+
+<div class="child-nav">
+    <span class="layui-breadcrumb">
+         <a>系统设置</a>
+         <a><cite>资源列表</cite></a>
+    </span>
+    <a class="layui-btn layui-btn-sm" href="javascript:location.replace(location.href);" title="刷新" style="float:right;margin-top: 3px">
+    	<i class="layui-icon" style="line-height:30px">&#x1002;</i>
+    </a>
+</div>
+
+<div class="layui-row">
+    <form  class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <a shiro:hasPermission="admin:resource:add" href="/admin/resource/detail" type="button" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div id="resourceTree"></div>
+
+<script src="/plugins/layui/layui.js"></script>
+<script src="/js/jquery.min.js"></script>
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+var resourceTree = [[${resourceTree}]];
+var editCheck = [[${editCheck}]];
+var removeCheck = [[${removeCheck}]];
+/*]]>*/
+
+function edit(nodeId) {
+	location.href = "/admin/resource/detail?resourceId=" + nodeId;
+}
+
+function del(nodeId) {
+	layer.msg('确定要删除该数据吗？', {
+		time: 0,
+		shade: [0.5,'#fff'],
+		btn: ['确定', '取消'],
+		yes: function(index) {
+            $.ajax({
+                url:'/admin/resource/remove',
+                type:'POST',
+                data:{resourceId: nodeId},
+                dataType:'json',
+                success:function(data){
+                    if(data.code == 0){
+                        layer.msg(data.msg, {icon: 1,time:1000}, function () {
+                        	location.reload();
+                        });
+                    }else{
+                        layer.msg(data.msg,{time:1000});
+                    }
+                }
+            });
+		}
+	});
+}
+
+var menuOption = '<option value=""></option>';
+function initMenuOption(menu, parentMenu){
+	for (var i = 0; i < menu.length; i++){
+		var item = menu[i];
+		if (parentMenu == null){
+			item.level = 0;
+		}else{
+			item.level = parentMenu.level + 1;
+		}
+		var span = '';
+		if (item.level > 0) {
+            for (var ind = 1; ind < item.level; ind++) {
+                span += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+            }
+            span += '|----&nbsp;';
+        }
+        var str = '<option value="'+item.id+'">'+span+item.name+'</option>';
+        menuOption += str;
+        if (item.children != "" && item.children != null){
+        	initMenuOption(item.children, item);
+        }
+	}
+}
+
+var layout = [
+    { name: '资源名称', treeNodes: true, headerClass: 'value_col', colClass: 'value_col', style: '' },
+    { name: '权限标识', field: 'resourceKey', headerClass: 'value_col', colClass: 'value_col', style: '' },
+    { name: '资源类型', field: 'resourceType', headerClass: 'value_col', colClass: 'value_col', style: '', 
+    	render: function(row){
+    		return row.resourceType == 'menu' ? '菜单' : '按钮'
+    	}
+    },
+    { name: '图标', field: 'icon', headerClass: 'value_col', colClass: 'value_col', style: '', 
+    	render: function(row) {
+            return '<i class="layui-icon">' + row.icon + '</i>';
+        }
+    },
+    { name: '操作', headerClass: 'value_col', colClass: 'value_col', style: '',
+        render: function(row) {
+            var str = "";
+            if (editCheck){
+                str += '<a class="layui-btn layui-btn-xs" onclick="edit(' + row.id + ')"><i class="layui-icon">&#xe642;</i>编辑</a>';
+            }
+            if (removeCheck){
+                str += '<a class="layui-btn layui-btn-xs layui-btn-danger" onclick="del(\' + row.id + \')"><i class="layui-icon">&#xe640;</i>删除</a>';
+            }
+            return str;
+        }
+    }
+];
+
+layui.use(['element', 'layer', 'table', 'tree'], function() {
+    var layer = layui.layer, form = layui.form, $ = layui.jquery;
+
+    var treeResource = layui.treeGird({
+        elem: '#resourceTree',
+        spreadable: true,
+        nodes: resourceTree,
+        layout: layout
+    });
+    initMenuOption(resourceTree, null);
+    window.localStorage.setItem('menuOption', menuOption);
+
+    form.render();
+});
+
+
+</script>
+</body>
+</html>
