@@ -52,7 +52,7 @@ public class ResourceController extends BaseController{
 			model.addAttribute("editCheck", subject.isPermitted("admin:resource:edit"));
 			model.addAttribute("removeCheck", subject.isPermitted("admin:resource:remove"));
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error("系统异常", e);
 		}
         return "/admin/resource/list";
     }
@@ -69,7 +69,7 @@ public class ResourceController extends BaseController{
     }
 	
 	/**
-     * 新增或修改角色信息
+     * 新增或修改信息
      */
     @RequestMapping(value = {"/save"}, method = RequestMethod.POST)
     @ResponseBody
@@ -88,6 +88,7 @@ public class ResourceController extends BaseController{
 	    		dbResource.setResourceType(resource.getResourceType());
 	    		dbResource.setUrl(resource.getUrl());
 	    		dbResource.setSort(resource.getSort());
+				dbResource.setIcon(resource.getIcon());
 	    		dbResource.setDescription(resource.getDescription());
 	    		resourceService.update(dbResource);
 	    	}else{
@@ -95,15 +96,18 @@ public class ResourceController extends BaseController{
 				if (exists){
 					return AjaxJson.failure("该权限标识已存在");
 				}
-				Resource parentResource = resourceService.find(Long.valueOf(parentResourceId));
-				resource.setParentId(parentResource);
+
+				if (!StringUtils.isEmpty(parentResourceId)){
+					Resource parentResource = resourceService.find(Long.valueOf(parentResourceId));
+					resource.setParentId(parentResource);
+				}
 				resourceService.save(resource);
 	    	}
 	    	return AjaxJson.success("操作成功");
     	}
     	catch (Exception e) {
-			logger.error(e.getMessage());
-			return AjaxJson.failure(e.getMessage());
+			logger.error("系统异常", e);
+			return AjaxJson.failure("系统异常：" + e);
 		}
     }
     
@@ -136,8 +140,8 @@ public class ResourceController extends BaseController{
     		}
     		return AjaxJson.failure("资源id不能为空");
     	} catch (Exception e) {
-    		logger.error(e.getMessage());
-    		return AjaxJson.failure(e.getMessage());
+    		logger.error("系统异常", e);
+    		return AjaxJson.failure("系统异常：" + e);
     	}
     }
 	

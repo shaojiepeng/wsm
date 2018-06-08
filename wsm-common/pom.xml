@@ -27,11 +27,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>io.projectreactor.spring</groupId>
             <artifactId>reactor-spring-context</artifactId>
         </dependency>

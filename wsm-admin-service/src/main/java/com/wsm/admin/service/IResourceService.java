@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface IResourceService extends IBaseService<Resource, Long>{
 	
-	public List<ResourceTree> getResourcesByUser(User user) throws Exception;
+	public List<ResourceTree> getResourcesByUser(User user, String resourceKey) throws Exception;
 
 	public List<Resource> getAllResources() throws Exception;
 

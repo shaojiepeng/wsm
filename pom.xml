@@ -21,9 +21,17 @@
     <!-- 模块说明：这里声明多个子模块 -->
     <modules>
         <module>wsm-common</module>
+        <module>wsm-common-web</module>
+        <module>wsm-sso</module>
+        <module>wsm-sso-server</module>
+        <module>wsm-eureka</module>
+        <module>wsm-admin-feign-consumer</module>
         <module>wsm-admin-web</module>
         <module>wsm-admin-service</module>
         <module>wsm-admin-dao</module>
+        <module>wsm-operation-web</module>
+        <module>wsm-operation-service</module>
+        <module>wsm-operation-dao</module>
     </modules>
 
     <properties>
@@ -45,17 +53,50 @@
         <shiro.version>1.2.4</shiro.version>
         <spring.boot.version>1.5.12.RELEASE</spring.boot.version>
         <redis.version>2.0.0.RELEASE</redis.version>
-        <jedis.version>2.9.0</jedis.version>
         <jackson.version>2.9.2</jackson.version>
+        <httpclient.version>4.5.3</httpclient.version>
+        <commons.codec.version>1.10</commons.codec.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
+        <jedis.version>2.9.0</jedis.version>
+        <eureka.version>1.4.0.RELEASE</eureka.version>
+        <feign.version>1.4.0.RELEASE</feign.version>
+        <spring-cloud.version>Dalston.SR3</spring-cloud.version>
+        <swagger-annotations.version>1.5.13</swagger-annotations.version>
+        <feign-httpclient.version>8.18.0</feign-httpclient.version>
+        <feign-jackson.version>8.18.0</feign-jackson.version>
     </properties>
 
     <!--dependencyManagement用于管理依赖版本号-->
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>com.wsm</groupId>
                 <artifactId>wsm-common</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-common-web</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-sso</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-sso-server</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-eureka</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-admin-feign-consumer</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
@@ -73,8 +114,23 @@
                 <artifactId>wsm-admin-dao</artifactId>
                 <version>1.0.0</version>
             </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-operation-web</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-operation-service</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-operation-dao</artifactId>
+                <version>1.0.0</version>
+            </dependency>
 
-
+            <!--spring boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
@@ -86,7 +142,6 @@
                 <version>${spring.boot.version}</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot</artifactId>
@@ -96,6 +151,12 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-autoconfigure</artifactId>
                 <version>${spring.boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-tomcat</artifactId>
+                <version>${spring.boot.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!--thymeleaf -->
@@ -173,7 +234,6 @@
                 <version>${jedis.version}</version>
             </dependency>
 
-
             <!-- nekohtml -->
             <dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>
@@ -195,11 +255,16 @@
                 <version>${lombok.version}</version>
             </dependency>
 
-            <!-- commons-lang3 -->
+            <!-- commons -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang3.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
             </dependency>
 
             <!-- fastjson -->
@@ -214,11 +279,53 @@
                 <version>${jackson.version}</version>
             </dependency>
 
+            <!-- httpclient -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-tomcat</artifactId>
-                <version>${spring.boot.version}</version>
-                <scope>provided</scope>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+            </dependency>
+
+            <!-- servlet -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${javax.servlet-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-annotations</artifactId>
+                <version>${swagger-annotations.version}</version>
+            </dependency>
+
+            <!-- spring cloud -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-eureka</artifactId>
+                <version>${eureka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-feign</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.feign</groupId>
+                <artifactId>feign-httpclient</artifactId>
+                <version>${feign-httpclient.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.feign</groupId>
+                <artifactId>feign-jackson</artifactId>
+                <version>${feign-jackson.version}</version>
             </dependency>
 
         </dependencies>

@@ -11,7 +11,6 @@ import com.wsm.admin.util.ResourceTreeUtil;
 import com.wsm.common.dao.IBaseDao;
 import com.wsm.common.service.impl.BaseServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +40,8 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 	}
 
 	@Override
-	@Cacheable(value = "resourcesUserCache", key = "#root.caches[0].name + ':' + #user.id")
-	public List<ResourceTree> getResourcesByUser(User user) throws Exception {
+	@Cacheable(value = "resourcesUserCache", key = "#user.id + ':' + #resourceKey"  )
+	public List<ResourceTree> getResourcesByUser(User user, String resourceKey) throws Exception {
 		//Get user menu
 		Set<Role> roles = user.getRoles();
 		List<Resource> resources = new ArrayList<>();
@@ -56,7 +55,13 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 //		List<Resource> resources = getAllResources();
 		ResourceTreeUtil tree = new ResourceTreeUtil(resources);
         List<ResourceTree> listTree = tree.buildTree();
-		return listTree;
+        List<ResourceTree> result = new ArrayList<>();
+        for (ResourceTree ltree : listTree){
+			if (ltree.getResourceKey().equals(resourceKey)){
+				result.add(ltree);
+			}
+		}
+		return result;
 	}
 
 	@Override

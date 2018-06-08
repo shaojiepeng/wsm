@@ -28,27 +28,52 @@
 
         <dependency>
             <groupId>com.wsm</groupId>
+            <artifactId>wsm-sso</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wsm</groupId>
             <artifactId>wsm-common</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.wsm</groupId>
+            <artifactId>wsm-common-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.wsm</groupId>
             <artifactId>wsm-admin-dao</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.wsm</groupId>
             <artifactId>wsm-admin-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wsm</groupId>
+            <artifactId>wsm-admin-feign-consumer</artifactId>
+        </dependency>
 
+        <!-- spring cloud -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+        </dependency>
+
+        <!-- spring boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!--nekohtml -->
@@ -73,16 +98,14 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- kaptcha -->
+        <!-- jackson -->
         <dependency>
-            <groupId>com.github.penggle</groupId>
-            <artifactId>kaptcha</artifactId>
+            <groupId>com.netflix.feign</groupId>
+            <artifactId>feign-jackson</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
         </dependency>
 
     </dependencies>

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.cache.annotation.*;
+
 import java.util.List;
 
 @Service("userService")
@@ -46,6 +48,10 @@ public class UserServiceImpl extends BaseServiceImpl<User, Long> implements IUse
 	public boolean existsByUserName(String userName) throws Exception{
 		return userDao.existsByUserName(userName);
 	}
+
+	@Override
+	@CacheEvict(value="resourcesUserCache", allEntries=true)
+	public void clearCache(User user) {}
 
 
 }

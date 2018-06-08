@@ -15,4 +15,5 @@ public interface IUserService extends IBaseService<User, Long>{
 
 	public boolean existsByUserName(String userName) throws Exception;
 
+	public void clearCache(User user);
 }

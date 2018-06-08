@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public class AjaxJson implements Serializable{
     private static final long serialVersionUID = -1491499610244557029L;
+
+    public AjaxJson(){}
     
     public static int CODE_SUCCESS = 0;
     public static int CODE_FAILURED = -1;

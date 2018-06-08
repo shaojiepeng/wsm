@@ -96,8 +96,8 @@ public class RoleController extends BaseController{
 			}
 			return AjaxJson.success("操作成功");
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return AjaxJson.failure(e.getMessage());
+			logger.error("系统异常", e);
+			return AjaxJson.failure("系统异常：" + e);
 		}
 	}
     
@@ -117,8 +117,8 @@ public class RoleController extends BaseController{
     		}
     		return AjaxJson.failure("角色id不能为空");
     	} catch (Exception e) {
-    		logger.error(e.getMessage());
-    		return AjaxJson.failure(e.getMessage());
+    		logger.error("系统异常", e);
+    		return AjaxJson.failure("系统异常：" + e);
     	}
     }
 

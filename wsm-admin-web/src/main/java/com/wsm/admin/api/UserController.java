@@ -119,8 +119,8 @@ public class UserController extends BaseController{
 			}
 			return AjaxJson.success("操作成功");
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			return AjaxJson.failure(e.getMessage());
+			logger.error("系统异常", e);
+			return AjaxJson.failure("系统异常：" + e);
 		}
 	}
     
@@ -139,8 +139,26 @@ public class UserController extends BaseController{
     		}
     		return AjaxJson.failure("用户id不能为空");
     	} catch (Exception e) {
-    		logger.error(e.getMessage());
-    		return AjaxJson.failure(e.getMessage());
+    		logger.error("系统异常", e);
+    		return AjaxJson.failure("系统异常：" + e);
+    	}
+    }
+    /**
+     * 清除缓存
+     */
+    @RequestMapping(value = {"/clearCache"}, method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxJson clearCache(Model model) {
+    	try {
+			Subject subject = SecurityUtils.getSubject();
+			Object principal = subject.getPrincipal();
+			User user = (User) principal;
+			User dbUser = userService.findByUserName(user.getUserName());
+			userService.clearCache(dbUser);
+			return AjaxJson.success("缓存已清除。");
+    	} catch (Exception e) {
+    		logger.error("系统异常", e);
+    		return AjaxJson.failure("系统异常：" + e);
     	}
     }
     
@@ -160,8 +178,8 @@ public class UserController extends BaseController{
     		}
     		return AjaxJson.failure("用户id不能为空");
     	} catch (Exception e) {
-    		logger.error(e.getMessage());
-    		return AjaxJson.failure(e.getMessage());
+    		logger.error("系统异常", e);
+    		return AjaxJson.failure("系统异常：" + e);
     	}
     }
 
@@ -197,6 +215,8 @@ public class UserController extends BaseController{
 			return AjaxJson.failure("操作异常");
 		}
 	}
+
+
 	
 	
 }

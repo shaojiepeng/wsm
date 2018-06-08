@@ -31,7 +31,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">父级资源</label>
                     <div class="layui-input-inline">
-                    	<select th:if="${resource.id==null}" name="parentResourceId" lay-verify="required" id='parentMenu'></select>
+                    	<select th:if="${resource.id==null}" name="parentResourceId" id='parentMenu'></select>
                         <input th:if="${resource.id!=null}" type="text" class="layui-input" th:value="${parentName}" readonly>
                     </div>
                 </div>
