@@ -27,7 +27,7 @@ public class NewsTypeServiceImpl extends BaseServiceImpl<NewsType, Long> impleme
 
 
     @Override
-    public List<NewsTypeTree> getTree() throws Exception{
+    public List<NewsTypeTree> getTree() throws Exception {
         List<NewsType> newsTypes = newsTypeDao.findAll();
         NewsTypeTreeUtil tree = new NewsTypeTreeUtil(newsTypes);
         return tree.buildTree();

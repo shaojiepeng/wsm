@@ -8,6 +8,7 @@ import com.wsm.admin.service.IRoleService;
 import com.wsm.admin.util.ResourceTreeUtil;
 import com.wsm.common.api.BaseController;
 import com.wsm.common.util.AjaxJson;
+import com.wsm.common.util.ConstantUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -103,7 +104,7 @@ public class ResourceController extends BaseController{
 				}
 				resourceService.save(resource);
 	    	}
-	    	return AjaxJson.success("操作成功");
+	    	return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     	}
     	catch (Exception e) {
 			logger.error("系统异常", e);
@@ -136,7 +137,7 @@ public class ResourceController extends BaseController{
     			resource.setParentId(null);
     			resource.setRecStatus("I");
     			resourceService.update(resource);
-    			return AjaxJson.success("操作成功");
+    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		}
     		return AjaxJson.failure("资源id不能为空");
     	} catch (Exception e) {

@@ -5,6 +5,7 @@ import com.wsm.admin.model.Role;
 import com.wsm.admin.service.IRoleService;
 import com.wsm.common.api.BaseController;
 import com.wsm.common.util.AjaxJson;
+import com.wsm.common.util.ConstantUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +95,7 @@ public class RoleController extends BaseController{
 				role.setResources(resources);
 				roleService.save(role);
 			}
-			return AjaxJson.success("操作成功");
+			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
 		} catch (Exception e) {
 			logger.error("系统异常", e);
 			return AjaxJson.failure("系统异常：" + e);
@@ -113,7 +114,7 @@ public class RoleController extends BaseController{
     			dbRole.setResources(null);
     			dbRole.setRecStatus("I");
     			roleService.update(dbRole);
-    			return AjaxJson.success("操作成功");
+    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		}
     		return AjaxJson.failure("角色id不能为空");
     	} catch (Exception e) {

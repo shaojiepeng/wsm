@@ -6,6 +6,7 @@ import com.wsm.admin.service.IRoleService;
 import com.wsm.admin.service.IUserService;
 import com.wsm.common.api.BaseController;
 import com.wsm.common.util.AjaxJson;
+import com.wsm.common.util.ConstantUtils;
 import com.wsm.common.util.PasswordUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -117,7 +118,7 @@ public class UserController extends BaseController{
 				user.setRoles(roles);
 				userService.save(user);
 			}
-			return AjaxJson.success("操作成功");
+			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
 		} catch (Exception e) {
 			logger.error("系统异常", e);
 			return AjaxJson.failure("系统异常：" + e);
@@ -135,7 +136,7 @@ public class UserController extends BaseController{
     			User dbUser = userService.find(Long.valueOf(userId));
     			dbUser.setPassword(PasswordUtil.encrypt("123456", dbUser.getUserName(), PasswordUtil.getStaticSalt()));
     			userService.update(dbUser);
-    			return AjaxJson.success("操作成功");
+    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		}
     		return AjaxJson.failure("用户id不能为空");
     	} catch (Exception e) {
@@ -174,7 +175,7 @@ public class UserController extends BaseController{
     			dbUser.setRoles(null);
     			dbUser.setRecStatus("I");
     			userService.update(dbUser);
-    			return AjaxJson.success("操作成功");
+    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		}
     		return AjaxJson.failure("用户id不能为空");
     	} catch (Exception e) {
@@ -209,7 +210,7 @@ public class UserController extends BaseController{
 
 			user.setPassword(PasswordUtil.encrypt(password, user.getUserName(), PasswordUtil.getStaticSalt()));
 			userService.update(user);
-			return AjaxJson.success("操作成功");
+			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
 		}catch (Exception e){
 			e.printStackTrace();
 			return AjaxJson.failure("操作异常");

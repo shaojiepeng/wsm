@@ -26,6 +26,12 @@ public class AdminUserFeignProvider {
             userVo.setId(user.getId());
             userVo.setUserName(user.getUserName());
             userVo.setPassword(user.getPassword());
+            userVo.setAvatar(user.getAvatar());
+            userVo.setRealName(user.getRealName());
+            userVo.setStatus(user.getStatus());
+            userVo.setUpdateTime(user.getUpdateTime());
+            userVo.setCreateTime(user.getCreateTime());
+            userVo.setRecStatus(user.getRecStatus());
         }
         return userVo;
     }

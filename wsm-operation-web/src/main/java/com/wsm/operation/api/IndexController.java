@@ -1,8 +1,8 @@
-package com.wsm.admin.api;
+package com.wsm.operation.api;
 
-import com.wsm.admin.model.User;
-import com.wsm.admin.service.IResourceService;
-import com.wsm.admin.service.IUserService;
+import com.wsm.admin.feign.consumer.service.AdminResourceFeignConsumer;
+import com.wsm.admin.feign.consumer.service.AdminUserFeignConsumer;
+import com.wsm.admin.feign.consumer.vo.UserVo;
 import com.wsm.common.api.BaseController;
 import com.wsm.sso.config.Config;
 import com.wsm.sso.model.SSOUser;
@@ -20,10 +20,10 @@ public class IndexController extends BaseController{
 	
 	@Autowired
 	private HttpServletRequest request;
-	@Autowired
-	private IUserService userService;
-	@Autowired
-	private IResourceService resourceService;
+    @Autowired
+    private AdminUserFeignConsumer userClient;
+    @Autowired
+    private AdminResourceFeignConsumer resourceClient;
 
     @Value("${sso.sys.path}")
     private String ssoSysPath;
@@ -45,29 +45,30 @@ public class IndexController extends BaseController{
     private String statisticsSysPath;
 
     /**
-     * 控制台首页
+     * 运营首页
      * @return
      */
-    @RequestMapping("/admin/home")
+    @RequestMapping("/operation/home")
     public String home(){
         return "home";
     }
 
     /**
-     * 控制台
+     * 运营系统
      * @param model
      * @return
      */
-	@RequestMapping(value = {"/admin", "/admin/index"}, method = RequestMethod.GET)
+	@RequestMapping(value = {"/operation", "/operation/index"}, method = RequestMethod.GET)
 	public String index(HttpServletRequest request, Model model){
-        getResourcesByUserAndResourceKey(request, model, "system");
+        getResourcesByUserAndResourceKey(request, model, "operation");
 		return "index";
 	}
 
     private void getResourcesByUserAndResourceKey(HttpServletRequest request, Model model, String resourceKey) {
         SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
-        User dbUser = userService.findByUserName(ssoUser.getUserName());
-        model.addAttribute("user", dbUser);
+        UserVo userVo = userClient.getByUserName(ssoUser.getUserName());
+
+        model.addAttribute("user", userVo);
         model.addAttribute("currentTab", resourceKey);
         model.addAttribute("ssoSysPath", ssoSysPath);
         model.addAttribute("adminSysPath", adminSysPath);
@@ -79,7 +80,7 @@ public class IndexController extends BaseController{
         model.addAttribute("settingSysPath", settingSysPath);
         model.addAttribute("statisticsSysPath", statisticsSysPath);
         try {
-            model.addAttribute("resources", resourceService.getResourcesByUser(dbUser, resourceKey));
+            model.addAttribute("resources", resourceClient.getResourcesByUser(userVo.getUserName(), resourceKey));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.wsm.common.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,10 +16,12 @@ public abstract class BaseModel {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date updateTime;
 	
 	@Column(length = 2)

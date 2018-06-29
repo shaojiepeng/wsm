@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>用户留言查看</title>
+    <link rel="stylesheet" href="/css/metroStyle/metroStyle.css">
+    <link rel="stylesheet" href="/plugins/layui/css/layui.css">
+    <link rel="stylesheet" href="/css/public.css">
+</head>
+<body class="child-body">
+<div class="child-nav">
+    <span class="layui-breadcrumb">
+         <a>运营</a>
+         <a href="/operation/gestbook/list">用户留言列表</a>
+         <a><cite th:text="用户留言"></cite></a>
+    </span>
+    <a class="layui-btn layui-btn-sm" href="javascript:location.replace(location.href);" title="刷新"
+       style="float:right;margin-top: 3px"><i class="layui-icon" style="line-height:30px">&#x1002;</i></a>
+</div>
+<div class="layui-col-md12">
+    <div class="layui-card">
+        <div class="layui-card-header" th:text="用户留言"></div>
+        <div class="layui-card-body layui-col-md6">
+            <form class="layui-form" action="" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">姓名</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" th:value="${gestbook.name}" class="layui-input" readonly>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">手机号码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="phoneNum" th:value="${gestbook.phoneNum}" class="layui-input" readonly/>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮箱地址</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="email" th:value="${gestbook.email}" class="layui-input"  readonly>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">提交时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="createTime" th:value="${#dates.format(gestbook.createTime, 'yyyy-MM-dd HH:mm:ss')}" class="layui-input"  readonly>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言主题</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" th:value="${gestbook.title}" class="layui-input"  readonly>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">留言内容</label>
+                        <div class="layui-input-block">
+                            <textarea name="title" class="layui-textarea" th:field="${gestbook.content}" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <a href="javascript:history.back()" type="button" class="layui-btn layui-btn-primary">返回</a>
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['element', 'form', 'laydate', 'layedit', 'upload'], function () {
+        var form = layui.form, $ = layui.jquery;
+        form.render();
+
+    });
+</script>
+</body>
+</html>

@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "tb_resource")
+@Table(name = "tb_news_type")
 @Where(clause = "rec_status='A'")
 public class NewsType extends BaseModel implements Serializable {
 
@@ -19,6 +19,8 @@ public class NewsType extends BaseModel implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parentId")
     private NewsType parentId;
+
+    private String description;
 
     public String getName() {
         return name;
@@ -34,5 +36,13 @@ public class NewsType extends BaseModel implements Serializable {
 
     public void setParentId(NewsType parentId) {
         this.parentId = parentId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

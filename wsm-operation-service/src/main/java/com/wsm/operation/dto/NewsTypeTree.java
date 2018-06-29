@@ -87,6 +87,7 @@ public class NewsTypeTree {
     public void setOrder(String order) {
         this.order = order;
     }
+
     public int getLevel() {
         return level;
     }
