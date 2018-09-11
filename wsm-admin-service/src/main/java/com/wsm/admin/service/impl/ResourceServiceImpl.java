@@ -2,7 +2,6 @@ package com.wsm.admin.service.impl;
 
 import com.wsm.admin.dao.IResourceDao;
 import com.wsm.admin.dto.ResourceTree;
-import com.wsm.admin.mapper.ResourceMapper;
 import com.wsm.admin.model.Resource;
 import com.wsm.admin.model.Role;
 import com.wsm.admin.model.User;
@@ -26,9 +25,6 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 	@Autowired
 	private IResourceDao resourceDao;
 	
-	@Autowired
-	private ResourceMapper resourceMapper;
-	
 	@Override
 	public IBaseDao<Resource, Long> getBaseDao() {
 		return this.resourceDao;
@@ -36,7 +32,7 @@ public class ResourceServiceImpl extends BaseServiceImpl<Resource, Long> impleme
 	
 	@Override
 	public List<Resource> getAllResources() throws Exception{
-		return resourceMapper.selectAll();
+		return resourceDao.findAll();
 	}
 
 	@Override

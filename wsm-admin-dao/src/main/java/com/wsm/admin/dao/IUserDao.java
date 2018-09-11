@@ -7,10 +7,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IUserDao extends IBaseDao<User, Long>{
 
-	public User findByUserNameAndPassword(String userName, String password);
+	User findByUserNameAndPassword(String userName, String password);
 
-	public User findByUserName(String userName);
+	User findByUserName(String userName);
 
-	public boolean existsByUserName(String userName);
+	boolean existsByUserName(String userName);
 	
 }

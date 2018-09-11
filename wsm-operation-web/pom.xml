@@ -51,6 +51,10 @@
             <artifactId>wsm-admin-feign-consumer</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wsm</groupId>
+            <artifactId>wsm-sso-feign-consumer</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
@@ -88,10 +92,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.theborakompanioni</groupId>
-            <artifactId>thymeleaf-extras-shiro</artifactId>
-        </dependency>
         <!-- commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -116,7 +116,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.wsm.admin.WsmAdminApplication</mainClass>
+                    <mainClass>com.wsm.operation.WsmOperationApplication</mainClass>
                     <fork>true</fork>
                 </configuration>
                 <executions>

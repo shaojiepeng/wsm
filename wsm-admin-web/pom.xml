@@ -46,10 +46,6 @@
             <groupId>com.wsm</groupId>
             <artifactId>wsm-admin-service</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.wsm</groupId>
-            <artifactId>wsm-admin-feign-consumer</artifactId>
-        </dependency>
         <!-- spring cloud -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -58,6 +54,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-feign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wsm</groupId>
+            <artifactId>wsm-sso-feign-consumer</artifactId>
         </dependency>
         <!-- spring boot -->
         <dependency>
@@ -88,10 +88,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.theborakompanioni</groupId>
-            <artifactId>thymeleaf-extras-shiro</artifactId>
         </dependency>
         <!-- commons-lang3 -->
         <dependency>

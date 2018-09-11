@@ -1,7 +1,6 @@
 package com.wsm.admin.service.impl;
 
 import com.wsm.admin.dao.IRoleDao;
-import com.wsm.admin.mapper.RoleMapper;
 import com.wsm.admin.model.Role;
 import com.wsm.admin.service.IRoleService;
 import com.wsm.common.dao.IBaseDao;
@@ -19,8 +18,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements IRol
 	@Autowired
 	private IRoleDao roleDao;
 	
-	@Autowired
-	private RoleMapper roleMapper;
+//	@Autowired
+//	private RoleMapper roleMapper;
 	
 	@Override
 	public IBaseDao<Role, Long> getBaseDao() {
@@ -29,7 +28,8 @@ public class RoleServiceImpl extends BaseServiceImpl<Role, Long> implements IRol
 
 	@Override
 	public List<Role> find(Role role) throws Exception {
-		return roleMapper.select(role);
+//		return roleMapper.select(role);
+		return null;
 	}
 
 	@Override

@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 //@EnableRedisHttpSession
 public class RedisConfig extends CachingConfigurerSupport {
 
-    Logger logger = LoggerFactory.getLogger(RedisConfig.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RedisConfig.class);
 
     @Bean
     public CacheManager cacheManager(RedisTemplate redisTemplate) {
@@ -93,19 +93,19 @@ public class RedisConfig extends CachingConfigurerSupport {
         CacheErrorHandler cacheErrorHandler = new CacheErrorHandler() {
             @Override
             public void handleCacheGetError(RuntimeException e, Cache cache, Object key) {
-                logger.error("redis异常：key=[{}]",key,e);
+                LOGGER.error("redis异常：key=[{}]",key,e);
             }
             @Override
             public void handleCachePutError(RuntimeException e, Cache cache, Object key, Object value) {
-                logger.error("redis异常：key=[{}]",key,e);
+                LOGGER.error("redis异常：key=[{}]",key,e);
             }
             @Override
             public void handleCacheEvictError(RuntimeException e, Cache cache, Object key)    {
-                logger.error("redis异常：key=[{}]",key,e);
+                LOGGER.error("redis异常：key=[{}]",key,e);
             }
             @Override
             public void handleCacheClearError(RuntimeException e, Cache cache) {
-                logger.error("redis异常：",e);
+                LOGGER.error("redis异常：",e);
             }
         };
         return cacheErrorHandler;

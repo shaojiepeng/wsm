@@ -9,12 +9,12 @@ import java.util.List;
 
 public interface IResourceService extends IBaseService<Resource, Long>{
 	
-	public List<ResourceTree> getResourcesByUser(User user, String resourceKey) throws Exception;
+	List<ResourceTree> getResourcesByUser(User user, String resourceKey) throws Exception;
 
-	public List<Resource> getAllResources() throws Exception;
+	List<Resource> getAllResources() throws Exception;
 
-	public List<ResourceTree> getTree() throws Exception;
+	List<ResourceTree> getTree() throws Exception;
 
-	public boolean existsByResourceKey(String resourceKey) throws Exception;
+	boolean existsByResourceKey(String resourceKey) throws Exception;
 
 }

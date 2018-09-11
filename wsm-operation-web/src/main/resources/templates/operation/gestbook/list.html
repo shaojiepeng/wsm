@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="renderer" content="webkit"/>
@@ -26,12 +26,6 @@
 
 <div class="layui-row">
     <form class="layui-form">
-        <!--<div class="layui-form-item">
-            <div class="layui-inline">
-                <a shiro:hasPermission="operation:用户留言:add" href="/operation/gestbook/detail" type="button"
-                   class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
-            </div>
-        </div>-->
     </form>
 </div>
 
@@ -54,10 +48,12 @@
         <td th:text="${gestbook.title}"></td>
         <td th:text="${#dates.format(gestbook.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
         <td>
-            <a shiro:hasPermission="operation:gestbook:edit" class="layui-btn layui-btn-xs" lay-event="detail"><i
-                    class="layui-icon">&#xe642;</i>查看</a>
-            <a shiro:hasPermission="operation:gestbook:remove" class="layui-btn layui-btn-xs layui-btn-danger"
-               lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+            <wsm:permission value="operation:gestbook:edit">
+                <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe642;</i>查看</a>
+            </wsm:permission>
+            <wsm:permission value="operation:gestbook:remove">
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+            </wsm:permission>
         </td>
     </tr>
     </tbody>

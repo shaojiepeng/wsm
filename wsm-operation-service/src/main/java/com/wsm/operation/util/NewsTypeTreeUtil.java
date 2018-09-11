@@ -11,7 +11,7 @@ public class NewsTypeTreeUtil {
     private List<NewsTypeTree> resultNodes = new ArrayList<NewsTypeTree>();//树形结构排序之后list内容
 
     private List<NewsTypeTree> nodes = new ArrayList<NewsTypeTree>();
-    ; //传入list参数
+    //传入list参数
 
     public NewsTypeTreeUtil(List<NewsType> nodesList) {//通过构造函数初始化
         for (NewsType n : nodesList) {

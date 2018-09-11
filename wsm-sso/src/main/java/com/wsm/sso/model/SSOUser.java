@@ -1,6 +1,7 @@
 package com.wsm.sso.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * sso user
@@ -14,6 +15,10 @@ public class SSOUser implements Serializable {
     private Long id;
 
     private String userName;
+
+    private Set<String> permissionSet;
+
+    private Set<String> roleSet;
 
     public Long getId() {
         return id;
@@ -29,5 +34,21 @@ public class SSOUser implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Set<String> getPermissionSet() {
+        return permissionSet;
+    }
+
+    public void setPermissionSet(Set<String> permissionSet) {
+        this.permissionSet = permissionSet;
+    }
+
+    public Set<String> getRoleSet() {
+        return roleSet;
+    }
+
+    public void setRoleSet(Set<String> roleSet) {
+        this.roleSet = roleSet;
     }
 }

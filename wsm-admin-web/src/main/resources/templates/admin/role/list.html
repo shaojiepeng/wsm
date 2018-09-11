@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="renderer" content="webkit" />
@@ -27,7 +27,9 @@
     <form  class="layui-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <a shiro:hasPermission="admin:role:add" href="/admin/role/detail" type="button" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+                <wsm:permission value="admin:role:add">
+                    <a href="/admin/role/detail" type="button" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+                </wsm:permission>
             </div>
         </div>
     </form>
@@ -51,11 +53,15 @@
 	        <td th:text="${role.roleName}"></td>
 	        <td th:text="${role.roleKey}"></td>
 	        <td th:text="${role.roleDesc}"></td>
-	        <td th:text="${role.createTime}"></td>
-	        <td th:text="${role.updateTime}"></td>
+	        <td th:text="${#dates.format(role.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+	        <td th:text="${#dates.format(role.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
 	        <td>
-                <a shiro:hasPermission="admin:role:edit" class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe642;</i>编辑</a>
-                <a shiro:hasPermission="admin:role:remove" class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+                <wsm:permission value="admin:role:edit">
+                    <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe642;</i>编辑</a>
+                </wsm:permission>
+                <wsm:permission value="admin:role:remove">
+                    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+                </wsm:permission>
             </td>
 	    </tr>
     </tbody>

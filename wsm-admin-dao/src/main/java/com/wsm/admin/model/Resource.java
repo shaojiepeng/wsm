@@ -11,9 +11,6 @@ import java.io.Serializable;
 @Where(clause = "rec_status='A'")
 public class Resource extends BaseModel implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -293343757324080501L;
 
 	@Column(length = 50)

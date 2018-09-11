@@ -3,17 +3,13 @@ package com.wsm.admin.service;
 import com.wsm.admin.model.User;
 import com.wsm.common.service.IBaseService;
 
-import java.util.List;
-
 public interface IUserService extends IBaseService<User, Long>{
 
-	public List<User> find(User user) throws Exception;
+	User findByUserNameAndPassword(String userName, String password) throws Exception;
 
-	public User findByUserNameAndPassword(String userName, String password) throws Exception;
+	User findByUserName(String userName);
 
-	public User findByUserName(String userName);
+	boolean existsByUserName(String userName) throws Exception;
 
-	public boolean existsByUserName(String userName) throws Exception;
-
-	public void clearCache(User user);
+	void clearCache(User user);
 }

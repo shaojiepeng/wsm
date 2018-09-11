@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController extends BaseController{
 	
 	@Autowired
-	private HttpServletRequest request;
-	@Autowired
 	private IUserService userService;
 	@Autowired
 	private IResourceService resourceService;

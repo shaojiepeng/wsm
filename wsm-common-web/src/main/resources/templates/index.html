@@ -67,7 +67,7 @@
                     <span th:text="${user.realName}"></span>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a th:href="@{'/admin/user/detail?userId='+${user.id}}" target="content">基本资料</a></dd>
+                    <dd><a th:href="@{${adminSysPath} + '/user/detail?userId='+${user.id}}" target="content">基本资料</a></dd>
                     <dd><a href="javascript:void(0);" id="model">安全设置</a></dd>
                     <dd><a href="javascript:void(0);" id="clearCache">清除缓存</a></dd>
                 </dl>
@@ -125,7 +125,12 @@
     </div>
 </div>
 <script src="/plugins/layui/layui.js"></script>
-<script>
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var adminSysPath = [[${adminSysPath}]];
+    /*]]>*/
+
     layui.use(['element','layer'], function(){
         var element = layui.element, layer = layui.layer, $ = layui.jquery;
         
@@ -178,7 +183,7 @@
                 shadeClose: true,
                 shade: [0.5,'#fff'],
                 maxmin: true,
-                content:'/admin/user/altPwd'
+                content: adminSysPath + '/user/altPwd'
             });
         });
         //清除缓存
@@ -189,7 +194,9 @@
                 btn: ['确定', '取消'],
                 yes: function(index) {
                     $.ajax({
-                        url:'/admin/user/clearCache',
+                        url: adminSysPath + '/user/clearCache',
+                        xhrFields: { withCredentials: true },
+                        crossDomain: true,
                         type:'POST',
                         data:{},
                         dataType:'json',

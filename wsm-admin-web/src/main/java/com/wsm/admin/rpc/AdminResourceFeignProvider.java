@@ -4,6 +4,7 @@ import com.wsm.admin.dto.ResourceTree;
 import com.wsm.admin.model.User;
 import com.wsm.admin.service.IResourceService;
 import com.wsm.admin.service.IUserService;
+import com.wsm.common.api.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +15,14 @@ import java.util.List;
  * admin role 服务提供者
  */
 @RestController
-public class AdminResourceFeignProvider {
+public class AdminResourceFeignProvider extends BaseController {
 
     @Autowired
     private IResourceService resourceService;
     @Autowired
     private IUserService userService;
 
-    @GetMapping(value = "/api/admin/resource/getResourcesByUser/{userName}/{resourceKey}")
+    @GetMapping(value = "/admin/api/resource/getResourcesByUser/{userName}/{resourceKey}")
     @ResponseBody
     public List<ResourceTree> getByUserName(@PathVariable("userName") String userName, @PathVariable("resourceKey") String resourceKey) throws Exception {
         User dbUser = userService.findByUserName(userName);

@@ -19,7 +19,7 @@ import java.io.IOException;
  *  2018-04-03
  */
 public class SSOFilter extends HttpServlet implements Filter {
-    private static Logger logger = LoggerFactory.getLogger(SSOFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SSOFilter.class);
 
     private String ssoServer;
     private String logoutPath;
@@ -32,7 +32,7 @@ public class SSOFilter extends HttpServlet implements Filter {
             logoutPath = filterConfig.getInitParameter(Config.SSO_LOGOUT_PATH);
         }
 
-        logger.info("SSOFilter init.");
+        LOGGER.info("SSOFilter init.");
     }
 
     @Override
@@ -89,6 +89,7 @@ public class SSOFilter extends HttpServlet implements Filter {
                 return;
             }
         }
+
         // ser sso user
         request.setAttribute(Config.SSO_USER, ssoUser);
         // already login, allow

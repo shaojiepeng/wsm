@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface IRoleService extends IBaseService<Role, Long>{
 	
-	public List<Role> find(Role role) throws Exception;
+	List<Role> find(Role role) throws Exception;
 
-	public boolean existsByRoleKey(String roleKey) throws Exception;
+	boolean existsByRoleKey(String roleKey) throws Exception;
 
 }

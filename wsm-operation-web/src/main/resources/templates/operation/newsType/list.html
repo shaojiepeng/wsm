@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="renderer" content="webkit"/>
@@ -28,8 +28,9 @@
     <form class="layui-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <a shiro:hasPermission="operation:newsType:add" href="/operation/newsType/detail" type="button"
-                   class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+                <wsm:permission value="operation:newsType:add">
+                    <a href="/operation/newsType/detail" type="button" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+                </wsm:permission>
             </div>
         </div>
     </form>

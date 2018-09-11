@@ -24,6 +24,7 @@
         <module>wsm-common-web</module>
         <module>wsm-sso</module>
         <module>wsm-sso-server</module>
+        <module>wsm-sso-feign-consumer</module>
         <module>wsm-eureka</module>
         <module>wsm-admin-feign-consumer</module>
         <module>wsm-admin-web</module>
@@ -32,6 +33,9 @@
         <module>wsm-operation-web</module>
         <module>wsm-operation-service</module>
         <module>wsm-operation-dao</module>
+        <module>wsm-file-dao</module>
+        <module>wsm-file-service</module>
+        <module>wsm-file-web</module>
     </modules>
 
     <properties>
@@ -64,6 +68,7 @@
         <swagger-annotations.version>1.5.13</swagger-annotations.version>
         <feign-httpclient.version>8.18.0</feign-httpclient.version>
         <feign-jackson.version>8.18.0</feign-jackson.version>
+        <fastdfs.version>1.25.3-RELEASE</fastdfs.version>
     </properties>
 
     <!--dependencyManagement用于管理依赖版本号-->
@@ -82,6 +87,11 @@
             <dependency>
                 <groupId>com.wsm</groupId>
                 <artifactId>wsm-sso</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-sso-feign-consumer</artifactId>
                 <version>1.0.0</version>
             </dependency>
             <dependency>
@@ -129,7 +139,16 @@
                 <artifactId>wsm-operation-dao</artifactId>
                 <version>1.0.0</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-file-dao</artifactId>
+                <version>1.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wsm</groupId>
+                <artifactId>wsm-file-service</artifactId>
+                <version>1.0.0</version>
+            </dependency>
             <!--spring boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -165,12 +184,6 @@
                 <artifactId>spring-boot-starter-thymeleaf</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.github.theborakompanioni</groupId>
-                <artifactId>thymeleaf-extras-shiro</artifactId>
-                <version>${thymeleaf.shiro.version}</version>
-            </dependency>
-
             <!-- JPA -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -179,7 +192,7 @@
             </dependency>
 
             <!-- mybatis -->
-            <dependency>
+            <!--<dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${spring.mybatis.version}</version>
@@ -188,7 +201,7 @@
                 <groupId>tk.mybatis</groupId>
                 <artifactId>mapper-spring-boot-starter</artifactId>
                 <version>${tk.mybatis.version}</version>
-            </dependency>
+            </dependency>-->
 
             <!-- mysql -->
             <dependency>
@@ -204,24 +217,6 @@
                 <artifactId>druid</artifactId>
                 <version>${druid.version}</version>
             </dependency>
-
-            <!-- shiro -->
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-core</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-spring</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.shiro</groupId>
-                <artifactId>shiro-web</artifactId>
-                <version>${shiro.version}</version>
-            </dependency>
-
             <!-- redis -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -233,28 +228,24 @@
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
             </dependency>
-
             <!-- nekohtml -->
             <dependency>
                 <groupId>net.sourceforge.nekohtml</groupId>
                 <artifactId>nekohtml</artifactId>
                 <version>${nekohtml.version}</version>
             </dependency>
-
             <!-- kaptcha -->
             <dependency>
                 <groupId>com.github.penggle</groupId>
                 <artifactId>kaptcha</artifactId>
                 <version>${kaptcha.version}</version>
             </dependency>
-
             <!-- lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
-
             <!-- commons -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -266,7 +257,6 @@
                 <artifactId>commons-codec</artifactId>
                 <version>${commons.codec.version}</version>
             </dependency>
-
             <!-- fastjson -->
             <dependency>
                 <groupId>com.alibaba</groupId>
@@ -327,7 +317,11 @@
                 <artifactId>feign-jackson</artifactId>
                 <version>${feign-jackson.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>com.github.tobato</groupId>
+                <artifactId>fastdfs-client</artifactId>
+                <version>${fastdfs.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

@@ -29,17 +29,16 @@ import java.util.List;
 @RequestMapping("/api/operation/news")
 public class RpcNewsController extends BaseController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcNewsController.class);
     @Autowired
     private INewsService newsService;
-
     @Autowired
     private INewsTypeService newsTypeService;
 
     @RequestMapping(value = "/getByType", method = RequestMethod.GET)
     public AjaxJson getNewsByType(String newsTypeId, @RequestParam(value="page", defaultValue="1")int page){
         try {
+            AjaxJson ajaxJson = null;
             if (StringUtils.isNotEmpty(newsTypeId)){
                 NewsType newsType = newsTypeService.find(Long.valueOf(newsTypeId));
 
@@ -60,11 +59,13 @@ public class RpcNewsController extends BaseController {
                     }
                 }
                 Page<NewsVo> exPage = new PageImpl<NewsVo>(newsVos, pageable, newsList.getTotalElements());
-                return AjaxJson.success(exPage);
+                ajaxJson = AjaxJson.success(exPage);
+            }else{
+                ajaxJson = AjaxJson.failure("新闻类型ID不能为空。");
             }
-            return AjaxJson.failure("新闻类型ID不能为空。");
+            return ajaxJson;
         }catch(Exception e){
-            logger.error("系统异常：" + e);
+            LOGGER.error("系统异常：" + e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }
@@ -72,13 +73,16 @@ public class RpcNewsController extends BaseController {
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
     public AjaxJson find(String newsId){
         try{
+            AjaxJson ajaxJson = null;
             if (StringUtils.isNotEmpty(newsId)){
                 News news = newsService.find(Long.valueOf(newsId));
-                return AjaxJson.success(newsService.encapsulationDetail(news));
+                ajaxJson = AjaxJson.success(newsService.encapsulationDetail(news));
+            }else {
+                ajaxJson = AjaxJson.failure("新闻ID不能为空。");
             }
-            return AjaxJson.failure("新闻ID不能为空。");
+            return ajaxJson;
         }catch(Exception e){
-            logger.error("系统异常：" + e);
+            LOGGER.error("系统异常：" + e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }

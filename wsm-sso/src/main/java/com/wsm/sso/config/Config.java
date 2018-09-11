@@ -47,5 +47,5 @@ public class Config {
 
     public static final ResultT<String> SSO_LOGIN_FAIL_RESULT = new ResultT(501, "sso not login.");
 
-
+    public static final ResultT<String> SSO_NO_PERMISSION_RESULT = new ResultT(502, "您没有权限，请联系管理员");
 }

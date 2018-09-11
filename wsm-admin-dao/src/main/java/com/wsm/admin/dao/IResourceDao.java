@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IResourceDao extends IBaseDao<Resource, Long>{
 
-	public boolean existsByResourceKey(String resourceKey);
+	boolean existsByResourceKey(String resourceKey);
 
 }

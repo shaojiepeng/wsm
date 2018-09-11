@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 
 @SpringBootApplication(scanBasePackages={"com.wsm.common", "com.wsm.operation"})
 @EnableAutoConfiguration
-@EnableFeignClients(basePackages={"com.wsm.admin.feign.consumer"})
+@EnableFeignClients(basePackages={"com.wsm.sso.feign.consumer", "com.wsm.admin.feign.consumer"})
 @EnableEurekaClient
 @EnableCaching
 public class WsmOperationApplication extends SpringBootServletInitializer {

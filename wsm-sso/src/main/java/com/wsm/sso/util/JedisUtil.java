@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  */
 public class JedisUtil {
-	private static Logger logger = LoggerFactory.getLogger(JedisUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JedisUtil.class);
 
 	private static final int DEFAULT_EXPIRE_TIME = 7200; // 默认过期时间,单位/秒, 60*60*2=2H, 两小时
 	private static String address;
@@ -83,7 +83,7 @@ public class JedisUtil {
 								jedisShardInfos.add(jedisShardInfo);
 							}
 							shardedJedisPool = new ShardedJedisPool(config, jedisShardInfos);
-							logger.info(">>>>>>>>>>> xxl-sso, JedisUtil.ShardedJedisPool init success.");
+							LOGGER.info(">>>>>>>>>>> xxl-sso, JedisUtil.ShardedJedisPool init success.");
 						}
 
 					} finally {
@@ -92,7 +92,7 @@ public class JedisUtil {
                 }
 
 			} catch (InterruptedException e) {
-				logger.error("系统异常：", e);
+				LOGGER.error("系统异常：", e);
 			}
 		}
 
@@ -122,13 +122,13 @@ public class JedisUtil {
 			byte[] bytes = baos.toByteArray();
 			return bytes;
 		} catch (Exception e) {
-			logger.error("{}", e);
+			LOGGER.error("{}", e);
 		} finally {
 			try {
 				oos.close();
 				baos.close();
 			} catch (IOException e) {
-				logger.error("{}", e);
+				LOGGER.error("{}", e);
 			}
 		}
 		return null;
@@ -148,12 +148,12 @@ public class JedisUtil {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			return ois.readObject();
 		} catch (Exception e) {
-			logger.error("{}", e);
+			LOGGER.error("{}", e);
 		} finally {
 			try {
 				bais.close();
 			} catch (IOException e) {
-				logger.error("{}", e);
+				LOGGER.error("{}", e);
 			}
 		}
 		return null;
@@ -179,7 +179,7 @@ public class JedisUtil {
 		try {
 			result = client.setex(key, seconds, value);
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}
@@ -209,7 +209,7 @@ public class JedisUtil {
 		try {
 			result = client.setex(key.getBytes(), seconds, serialize(obj));
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}
@@ -237,7 +237,7 @@ public class JedisUtil {
 		try {
 			value = client.get(key);
 		} catch (Exception e) {
-			logger.info("", e);
+			LOGGER.info("", e);
 		} finally {
 			client.close();
 		}
@@ -258,7 +258,7 @@ public class JedisUtil {
 				obj = unserialize(bytes);
 			}
 		} catch (Exception e) {
-			logger.info("", e);
+			LOGGER.info("", e);
 		} finally {
 			client.close();
 		}
@@ -278,7 +278,7 @@ public class JedisUtil {
 		try {
 			result = client.del(key);
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}
@@ -297,7 +297,7 @@ public class JedisUtil {
 		try {
 			result = client.incrBy(key, i);
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}
@@ -315,7 +315,7 @@ public class JedisUtil {
 		try {
 			result = client.exists(key);
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}
@@ -336,7 +336,7 @@ public class JedisUtil {
 		try {
 			result = client.expire(key, seconds);
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}
@@ -355,7 +355,7 @@ public class JedisUtil {
 		try {
 			result = client.expireAt(key, unixTime);
 		} catch (Exception e) {
-			logger.info("{}", e);
+			LOGGER.info("{}", e);
 		} finally {
 			client.close();
 		}

@@ -27,8 +27,7 @@ import java.util.Set;
 @RequestMapping("/admin/role")
 public class RoleController extends BaseController{
 	
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(RoleController.class);
 	@Autowired
 	private IRoleService roleService;
 	
@@ -63,6 +62,7 @@ public class RoleController extends BaseController{
     @ResponseBody
 	public AjaxJson save(Role role, String resourceIds, Model model) {
 		try {
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);;
 			Set<Resource> resources = new HashSet<>();
 			if (resourceIds != null){
 				String[] resourceIdArr = resourceIds.split(",");
@@ -75,29 +75,31 @@ public class RoleController extends BaseController{
 			
 			if (!StringUtils.isEmpty(role.getId())){
 				Role dbRole = roleService.find(role.getId());
-				if (!dbRole.getRoleKey().equals(role.getRoleKey())){
+				if (dbRole.getRoleKey().equals(role.getRoleKey())){
+					dbRole.setRoleName(role.getRoleName());
+					dbRole.setRoleKey(role.getRoleKey());
+					dbRole.setRoleDesc(role.getRoleDesc());
+					dbRole.setResources(resources);
+					roleService.update(dbRole);
+				}
+				else{
 					boolean exists = roleService.existsByRoleKey(role.getRoleKey());
 					if (exists){
-						return AjaxJson.failure("该标识符已存在");
+						ajaxJson = AjaxJson.failure("该标识符已存在");
 					}
 				}
-				dbRole.setRoleName(role.getRoleName());
-				dbRole.setRoleKey(role.getRoleKey());
-				dbRole.setRoleDesc(role.getRoleDesc());
-				
-				dbRole.setResources(resources);
-				roleService.update(dbRole);
 			}else{
 				boolean exists = roleService.existsByRoleKey(role.getRoleKey());
-				if (exists){
-					return AjaxJson.failure("该标识符已存在");
+				if (!exists){
+					role.setResources(resources);
+					roleService.save(role);
+				}else{
+					ajaxJson = AjaxJson.failure("该标识符已存在");
 				}
-				role.setResources(resources);
-				roleService.save(role);
 			}
-			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+			return ajaxJson;
 		} catch (Exception e) {
-			logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
 			return AjaxJson.failure("系统异常：" + e);
 		}
 	}
@@ -109,16 +111,18 @@ public class RoleController extends BaseController{
     @ResponseBody
     public AjaxJson remove(String roleId, Model model) {
     	try {
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		if (!StringUtils.isEmpty(roleId)){
     			Role dbRole = roleService.find(Long.valueOf(roleId));
     			dbRole.setResources(null);
     			dbRole.setRecStatus("I");
     			roleService.update(dbRole);
-    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
-    		}
-    		return AjaxJson.failure("角色id不能为空");
+    		}else{
+				ajaxJson = AjaxJson.failure("角色id不能为空");
+			}
+    		return ajaxJson;
     	} catch (Exception e) {
-    		logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
     		return AjaxJson.failure("系统异常：" + e);
     	}
     }

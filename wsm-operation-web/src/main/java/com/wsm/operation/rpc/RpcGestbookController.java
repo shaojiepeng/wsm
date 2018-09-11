@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/operation/gestbook")
 public class RpcGestbookController extends BaseController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcGestbookController.class);
     @Autowired
     private IGestbookService gestbookService;
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public AjaxJson save(Gestbook gestbook, String randomcode){
         try{
+            AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
             String validateCode = (String) request.getSession().getAttribute("apiValidateCode");
             if (randomcode != null && validateCode != null && !randomcode.equals(validateCode)) {
-                return AjaxJson.failure("验证码错误。");
+                ajaxJson = AjaxJson.failure("验证码错误。");
+            }else {
+                gestbookService.save(gestbook);
             }
-
-            gestbookService.save(gestbook);
-            return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+            return ajaxJson;
         }catch(Exception e){
-            logger.error("系统异常：" + e);
+            LOGGER.error("系统异常：" + e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }

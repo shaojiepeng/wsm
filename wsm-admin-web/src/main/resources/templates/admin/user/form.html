@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <title>管理员编辑页</title>
@@ -48,14 +47,14 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">头像</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="avatar" id="af" class="layui-input" th:value="${user.avatar}">
+                        <input type="text" name="avatar" id="af" class="layui-input" th:value="${user.avatar}" readonly>
                     </div>
                     <div class="layui-upload">
                         <button type="button" class="layui-btn" id="avatar">
                         	<i class="layui-icon">&#xe681;</i>上传图片
                         </button>
                         <div class="layui-upload-list" style="padding-left: 110px">
-                            <img class="layui-upload-img" style="max-width: 120px;max-height: 120px" id="avatar-view" th:src="${user.avatar}">
+                            <img class="layui-upload-img" style="max-width: 120px;max-height: 120px" id="avatar-view" th:src="${user.avatar}" >
                             <p id="demoText"></p>
                         </div>
                     </div>
@@ -114,12 +113,9 @@
 
         //监听提交
         form.on('submit(save)', function(data){
-            var headers = {};
-            headers['X-CSRF-TOKEN'] = "[[${_csrf.token}]]";
             $.ajax({
                 url:data.form.action,
                 type:data.form.method,
-                headers: headers,
                 data:data.field,
                 dataType:'json',
                 success:function(data){

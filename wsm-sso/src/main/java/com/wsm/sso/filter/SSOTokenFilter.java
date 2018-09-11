@@ -20,7 +20,7 @@ import java.io.IOException;
  *  2018-04-08 21:30:54
  */
 public class SSOTokenFilter extends HttpServlet implements Filter {
-    private static Logger logger = LoggerFactory.getLogger(SSOTokenFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SSOTokenFilter.class);
 
     private String ssoServer;
     private String logoutPath;
@@ -33,7 +33,7 @@ public class SSOTokenFilter extends HttpServlet implements Filter {
             logoutPath = filterConfig.getInitParameter(Config.SSO_LOGOUT_PATH);
         }
 
-        logger.info("SSOFilter init.");
+        LOGGER.info("SSOFilter init.");
     }
 
     @Override

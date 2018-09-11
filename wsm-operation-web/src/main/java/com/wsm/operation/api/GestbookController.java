@@ -4,17 +4,13 @@ import com.wsm.common.api.BaseController;
 import com.wsm.common.util.AjaxJson;
 import com.wsm.common.util.ConstantUtils;
 import com.wsm.operation.model.Gestbook;
-import com.wsm.operation.model.News;
 import com.wsm.operation.service.IGestbookService;
-import com.wsm.operation.vo.NewsVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -23,18 +19,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-
 @Controller
 @RequestMapping("/operation/gestbook")
 public class GestbookController extends BaseController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(GestbookController.class);
     @Autowired
     private IGestbookService gestbookService;
 
@@ -61,15 +50,17 @@ public class GestbookController extends BaseController {
     @ResponseBody
     public AjaxJson remove(String gestbookId, Model model) {
         try {
+            AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
             if (!StringUtils.isEmpty(gestbookId)) {
                 Gestbook gestbook = gestbookService.find(Long.valueOf(gestbookId));
                 gestbook.setRecStatus("I");
                 gestbookService.update(gestbook);
-                return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+            }else {
+                ajaxJson = AjaxJson.failure("留言id不能为空");
             }
-            return AjaxJson.failure("留言id不能为空");
+            return ajaxJson;
         } catch (Exception e) {
-            logger.error("系统异常：", e);
+            LOGGER.error("系统异常：", e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }

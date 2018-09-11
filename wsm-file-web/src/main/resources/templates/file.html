@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>文件管理</title>
+    <link rel="stylesheet" href="/css/zTreeStyle/zTreeStyle.css">
+    <link rel="stylesheet" href="/plugins/layui/css/layui.css"/>
+    <link rel="stylesheet" href="/css/public.css"/>
+</head>
+<body class="child-body">
+
+    <div class="child-nav">
+        <span class="layui-breadcrumb">
+             <a>文件</a>
+             <a><cite>文件管理</cite></a>
+        </span>
+        <a class="layui-btn layui-btn-sm" href="javascript:location.replace(location.href);" title="刷新" style="float:right;margin-top: 3px">
+            <i class="layui-icon" style="line-height:30px">&#x1002;</i>
+        </a>
+    </div>
+
+    <div class="layui-row">
+        <form  class="layui-form">
+            <div class="layui-col-md3">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <wsm:permission value="file:directory:add">
+                            <a id="add" href="javascript:void(0);" type="button" class="layui-btn layui-btn-xs"><i class="layui-icon">&#xe608;</i>新增</a>
+                        </wsm:permission>
+                        <wsm:permission value="file:directory:edit">
+                            <a id="edit" href="javascript:void(0);" type="button" class="layui-btn layui-btn-xs"><i class="layui-icon">&#xe642;</i>修改</a>
+                        </wsm:permission>
+                        <wsm:permission value="file:directory:remove">
+                            <a id="remove" href="javascript:void(0);" type="button" class="layui-btn layui-btn-xs layui-btn-danger"><i class="layui-icon">&#xe640;</i>删除</a>
+                        </wsm:permission>
+                    </div>
+                </div>
+                <div id="directoryTree" class="ztree "></div>
+            </div>
+
+            <div class="layui-col-md9">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <wsm:permission value="file:file:upload">
+                            <a id="upload" href="javascript:void(0);" type="button" class="layui-btn layui-btn-xs"><i class="layui-icon">&#xe62f;</i>上传文件</a>
+                        </wsm:permission>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/jquery.ztree.all.min.js"></script>
+<script src="/plugins/layui/layui.js"></script>
+<script th:inline="javascript">
+
+    /*<![CDATA[*/
+    var directoryTree = [[${directoryTree}]];
+    var directoryId = [[${currentDirectoryId}]];
+    var directoryName = [[${currentDirectoryName}]];
+    /*]]>*/
+
+    var setting = {
+        callback: {
+            onClick: zTreeOnClick,
+            onRename: zTreeOnRename,
+            beforeRemove: zTreeBeforeRemove
+        },
+        edit:{
+            enable: true,
+            drag:{
+                isMove : true,
+                prev : true,
+                inner :true,
+                next : true
+            }
+
+        }
+    };
+
+    function zTreeOnClick(event, treeId, treeNode) {
+        directoryId = treeNode.id;
+        directoryName = treeNode.name;
+        location.href = "/file/list?directoryId="+directoryId;
+    }
+    
+    function zTreeOnRename(event, treeId, treeNode, isCancel) {
+        $.ajax({
+            url:'/file/directory/edit',
+            type:'POST',
+            data:{folderName:treeNode.name, directoryId:treeNode.id},
+            dataType:'json',
+            success:function(data){
+                if(data.code == 0){
+                    layer.msg(data.msg, {icon: 1,time:1000}, function () {
+                        location.href = "/file/list?directoryId="+directoryId;
+                    });
+                }else{
+                    layer.msg(data.msg,{time:1000});
+                }
+            }
+        });
+    }
+
+    function zTreeBeforeRemove(treeId, treeNode) {
+        var flag = false;
+        layer.confirm("此操作会将该目录下所有的数据删除，确定要删除吗？", {icon: 3, title:'提示'},
+            function(index){      //确认后执行的操作
+                $.ajax({
+                    url:'/file/directory/remove',
+                    type:'POST',
+                    data:{directoryId:treeNode.id},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 0){
+                            layer.msg(data.msg, {icon: 1,time:1000}, function () {
+                                flag = true;
+                                layer.close(index);
+                                location.reload();
+                            });
+                        }else{
+                            layer.msg(data.msg,{time:1000});
+                        }
+                    }
+                });
+            },
+            function(index){      //取消后执行的操作
+                flag = false;
+                layer.close(index);
+            }
+        );
+        return flag
+    }
+
+    var treeObj;
+    layui.use(['element','form','layer', 'upload'], function(){
+        $.fn.zTree.init($("#directoryTree"), setting, directoryTree);
+        treeObj=$.fn.zTree.getZTreeObj("directoryTree");
+        // treeObj.expandAll(true);
+
+        var node = treeObj.getNodeByParam("id", directoryId);//根据ID找到该节点
+        treeObj.selectNode(node);//根据该节点选中
+
+        var upload = layui.upload;
+        upload.render({
+            elem : '#upload',
+            url : '/file/upload',
+            data: {directoryId:directoryId},
+            size : 100*1024,
+            multiple : true,
+            before : function(obj) {
+                obj.preview(function(index, file, result) {
+
+                });
+            },
+            done : function(res) {
+
+            }
+        });
+
+
+        $('#add').on('click',function () {
+            var parentId = directoryId;
+            var parentName = directoryName;
+            if (directoryId == null || undefined == directoryId){
+                parentId = 1;
+                parentName = 'root';
+            }
+
+            layer.prompt({title: '父目录：' + parentName, formType: 0, placeholder: '请输入目录名称'}, function(text, index){
+                $.ajax({
+                    url:'/file/directory/add',
+                    type:'POST',
+                    data:{folderName:text, parentId:parentId},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 0){
+                            layer.msg(data.msg, {icon: 1,time:1000}, function () {
+                                layer.close(index);
+                                location.href = "/file/list?directoryId="+directoryId;
+                            });
+                        }else{
+                            layer.msg(data.msg,{time:1000});
+                        }
+                    }
+                });
+            });
+        });
+
+        $('#edit').on('click',function () {
+            if (directoryId == null || undefined == directoryId){
+                layer.msg("请选择目录", {time:1000}, function () {});
+                return;
+            }
+            layer.prompt({title: directoryName, formType: 0, placeholder: '请输入目录名称'}, function(text, index){
+                $.ajax({
+                    url:'/file/directory/edit',
+                    type:'POST',
+                    data:{folderName:text, directoryId:directoryId},
+                    dataType:'json',
+                    success:function(data){
+                        if(data.code == 0){
+                            layer.msg(data.msg, {icon: 1,time:1000}, function () {
+                                layer.close(index);
+                                location.href = "/file/list?directoryId="+directoryId;
+                            });
+                        }else{
+                            layer.msg(data.msg,{time:1000});
+                        }
+                    }
+                });
+            });
+
+        });
+
+        $('#remove').on('click',function () {
+            if (directoryId == null || undefined == directoryId){
+                layer.msg("请选择目录", {time:1000}, function () {});
+                return;
+            }
+            layer.confirm("此操作会将该目录下所有的数据删除，确定要删除吗？", {icon: 3, title:'提示'},
+                function(index){      //确认后执行的操作
+                    $.ajax({
+                        url:'/file/directory/remove',
+                        type:'POST',
+                        data:{directoryId:directoryId},
+                        dataType:'json',
+                        success:function(data){
+                            if(data.code == 0){
+                                layer.msg(data.msg, {icon: 1,time:1000}, function () {
+                                    location.reload();
+                                });
+                            }else{
+                                layer.msg(data.msg,{time:1000});
+                            }
+                        }
+                    });
+                },
+                function(index){      //取消后执行的操作
+                    layer.close(index);
+                }
+            );
+
+
+        });
+
+    });
+
+
+</script>
+</body>
+</html>

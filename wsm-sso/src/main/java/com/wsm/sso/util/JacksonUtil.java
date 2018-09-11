@@ -21,7 +21,7 @@ import java.util.Map;
  *  2015-9-25 18:02:56
  */
 public class JacksonUtil {
-	private static Logger logger = LoggerFactory.getLogger(JacksonUtil.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(JacksonUtil.class);
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
     public static ObjectMapper getInstance() {
@@ -39,11 +39,11 @@ public class JacksonUtil {
     	try {
 			return getInstance().writeValueAsString(obj);
 		} catch (JsonGenerationException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		} catch (JsonMappingException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		} catch (IOException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		}
         return null;
     }
@@ -60,11 +60,11 @@ public class JacksonUtil {
     	try {
 			return getInstance().readValue(jsonStr, clazz);
 		} catch (JsonParseException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		} catch (JsonMappingException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		} catch (IOException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		}
     	return null;
     }
@@ -72,11 +72,11 @@ public class JacksonUtil {
     	try {
 			return getInstance().readValue(jsonStr, new TypeReference<T>() { });
 		} catch (JsonParseException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		} catch (JsonMappingException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		} catch (IOException e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		}
     	return null;
     }
@@ -90,7 +90,7 @@ public class JacksonUtil {
 			System.out.println(json);
 			System.out.println(readValue(json, Map.class));
 		} catch (Exception e) {
-			logger.error("系统异常：", e);
+			LOGGER.error("系统异常：", e);
 		}
 	}
 }

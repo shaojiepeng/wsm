@@ -9,8 +9,8 @@ import com.wsm.admin.util.ResourceTreeUtil;
 import com.wsm.common.api.BaseController;
 import com.wsm.common.util.AjaxJson;
 import com.wsm.common.util.ConstantUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import com.wsm.sso.config.Config;
+import com.wsm.sso.model.SSOUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +30,15 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin/resource")
 public class ResourceController extends BaseController{
 	
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ResourceController.class);
 	@Autowired
 	private IResourceService resourceService;
-	
 	@Autowired
 	private IRoleService roleService;
 	
@@ -49,11 +48,23 @@ public class ResourceController extends BaseController{
 			List<ResourceTree> listTree = resourceService.getTree();
 			model.addAttribute("resourceTree", listTree);
 
-			Subject subject = SecurityUtils.getSubject();
-			model.addAttribute("editCheck", subject.isPermitted("admin:resource:edit"));
-			model.addAttribute("removeCheck", subject.isPermitted("admin:resource:remove"));
+			boolean hasEditCheck = false;
+			boolean hasRemoveCheck = false;
+			SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
+			if (ssoUser != null && ssoUser.getPermissionSet() != null){
+				Set<String> permissionSet = ssoUser.getPermissionSet();
+				if (permissionSet.contains("admin:resource:edit")){
+					hasEditCheck = true;
+				}
+				if (permissionSet.contains("admin:resource:remove")){
+					hasRemoveCheck = true;
+				}
+			}
+
+			model.addAttribute("editCheck", hasEditCheck);
+			model.addAttribute("removeCheck", hasRemoveCheck);
 		} catch (Exception e) {
-			logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
 		}
         return "/admin/resource/list";
     }
@@ -76,38 +87,40 @@ public class ResourceController extends BaseController{
     @ResponseBody
     public AjaxJson save(Resource resource, String parentResourceId, Model model){
     	try {
+    		AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
 	    	if (!StringUtils.isEmpty(resource.getId())){
 	    		Resource dbResource = resourceService.find(resource.getId());
-	    		if (!dbResource.getResourceKey().equals(resource.getResourceKey())){
+	    		if (dbResource.getResourceKey().equals(resource.getResourceKey())){
+					dbResource.setName(resource.getName());
+					dbResource.setResourceKey(resource.getResourceKey());
+					dbResource.setResourceType(resource.getResourceType());
+					dbResource.setUrl(resource.getUrl());
+					dbResource.setSort(resource.getSort());
+					dbResource.setIcon(resource.getIcon());
+					dbResource.setDescription(resource.getDescription());
+					resourceService.update(dbResource);
+				}else{
 					boolean exists = resourceService.existsByResourceKey(resource.getResourceKey());
 					if (exists){
-						return AjaxJson.failure("该权限标识已存在");
+						ajaxJson = AjaxJson.failure("该权限标识已存在");
 					}
 				}
-	    		dbResource.setName(resource.getName());
-	    		dbResource.setResourceKey(resource.getResourceKey());
-	    		dbResource.setResourceType(resource.getResourceType());
-	    		dbResource.setUrl(resource.getUrl());
-	    		dbResource.setSort(resource.getSort());
-				dbResource.setIcon(resource.getIcon());
-	    		dbResource.setDescription(resource.getDescription());
-	    		resourceService.update(dbResource);
 	    	}else{
 	    		boolean exists = resourceService.existsByResourceKey(resource.getResourceKey());
-				if (exists){
-					return AjaxJson.failure("该权限标识已存在");
+				if (!exists){
+					if (!StringUtils.isEmpty(parentResourceId)){
+						Resource parentResource = resourceService.find(Long.valueOf(parentResourceId));
+						resource.setParentId(parentResource);
+					}
+					resourceService.save(resource);
+				}else{
+					ajaxJson = AjaxJson.failure("该权限标识已存在");
 				}
-
-				if (!StringUtils.isEmpty(parentResourceId)){
-					Resource parentResource = resourceService.find(Long.valueOf(parentResourceId));
-					resource.setParentId(parentResource);
-				}
-				resourceService.save(resource);
 	    	}
-	    	return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+	    	return ajaxJson;
     	}
     	catch (Exception e) {
-			logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
 			return AjaxJson.failure("系统异常：" + e);
 		}
     }
@@ -119,6 +132,7 @@ public class ResourceController extends BaseController{
     @ResponseBody
     public AjaxJson remove(String resourceId, Model model){
     	try {
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		if (!StringUtils.isEmpty(resourceId)){
     			Resource resource = resourceService.find(Long.valueOf(resourceId));
     			Sort sort = new Sort(Sort.Direction.DESC, "createTime");
@@ -131,17 +145,19 @@ public class ResourceController extends BaseController{
 					}
     			}, sort);
     			
-    			if (childResource != null && childResource.size() > 0){
-    				return AjaxJson.failure("该资源拥有子资源，不能删除");
-    			}
-    			resource.setParentId(null);
-    			resource.setRecStatus("I");
-    			resourceService.update(resource);
-    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
-    		}
-    		return AjaxJson.failure("资源id不能为空");
+    			if (!(childResource != null && childResource.size() > 0)){
+					resource.setParentId(null);
+					resource.setRecStatus("I");
+					resourceService.update(resource);
+    			}else{
+					ajaxJson = AjaxJson.failure("该资源拥有子资源，不能删除");
+				}
+    		}else{
+				ajaxJson = AjaxJson.failure("资源id不能为空");
+			}
+    		return ajaxJson;
     	} catch (Exception e) {
-    		logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
     		return AjaxJson.failure("系统异常：" + e);
     	}
     }

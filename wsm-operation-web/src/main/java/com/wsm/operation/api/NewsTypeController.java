@@ -9,8 +9,8 @@ import com.wsm.operation.model.NewsType;
 import com.wsm.operation.service.INewsService;
 import com.wsm.operation.service.INewsTypeService;
 import com.wsm.operation.util.NewsTypeTreeUtil;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import com.wsm.sso.config.Config;
+import com.wsm.sso.model.SSOUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,16 +30,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/operation/newsType")
 public class NewsTypeController extends BaseController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NewsTypeController.class);
 
     @Autowired
     private INewsService newsService;
-
     @Autowired
     private INewsTypeService newsTypeService;
 
@@ -49,11 +49,23 @@ public class NewsTypeController extends BaseController {
             List<NewsTypeTree> listTree = newsTypeService.getTree();
             model.addAttribute("newsTypeTree", listTree);
 
-            Subject subject = SecurityUtils.getSubject();
-            model.addAttribute("editCheck", subject.isPermitted("operation:newsType:edit"));
-            model.addAttribute("removeCheck", subject.isPermitted("operation:newsType:remove"));
+            boolean hasEditCheck = false;
+            boolean hasRemoveCheck = false;
+            SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
+            if (ssoUser != null && ssoUser.getPermissionSet() != null){
+                Set<String> permissionSet = ssoUser.getPermissionSet();
+                if (permissionSet.contains("operation:newsType:edit")){
+                    hasEditCheck = true;
+                }
+                if (permissionSet.contains("operation:newsType:remove")){
+                    hasRemoveCheck = true;
+                }
+            }
+
+            model.addAttribute("editCheck", hasEditCheck);
+            model.addAttribute("removeCheck", hasRemoveCheck);
         } catch (Exception e) {
-            logger.error("系统异常", e);
+            LOGGER.error("系统异常", e);
         }
         return "/operation/newsType/list";
     }
@@ -76,14 +88,12 @@ public class NewsTypeController extends BaseController {
     @ResponseBody
     public AjaxJson save(NewsType newsType, String parentNewsTypeId, Model model) {
         try {
+            AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
             if (!StringUtils.isEmpty(newsType.getId())) {
                 NewsType dbNewsType = newsTypeService.find(newsType.getId());
                 dbNewsType.setName(newsType.getName());
                 dbNewsType.setDescription(newsType.getDescription());
                 if (!StringUtils.isEmpty(parentNewsTypeId)) {
-                    if (newsType.getId() == Long.valueOf(parentNewsTypeId)) {
-                        return AjaxJson.failure("请选择其他的分类");
-                    }
                     NewsType parentNewsType = newsTypeService.find(Long.valueOf(parentNewsTypeId));
                     dbNewsType.setParentId(parentNewsType);
                 } else {
@@ -97,9 +107,9 @@ public class NewsTypeController extends BaseController {
                 }
                 newsTypeService.save(newsType);
             }
-            return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+            return ajaxJson;
         } catch (Exception e) {
-            logger.error("系统异常：", e);
+            LOGGER.error("系统异常：", e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }
@@ -109,6 +119,7 @@ public class NewsTypeController extends BaseController {
     @ResponseBody
     public AjaxJson remove(String newsTypeId, Model model) {
         try {
+            AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
             if (!StringUtils.isEmpty(newsTypeId)) {
                 NewsType newsType = newsTypeService.find(Long.valueOf(newsTypeId));
                 Sort sort = new Sort(Sort.Direction.DESC, "createTime");
@@ -122,16 +133,18 @@ public class NewsTypeController extends BaseController {
                 }, sort);
 
                 if (childNewsType != null && childNewsType.size() > 0) {
-                    return AjaxJson.failure("该分类拥有子分类，不能删除");
+                    ajaxJson = AjaxJson.failure("该分类拥有子分类，不能删除");
+                }else {
+                    newsType.setParentId(null);
+                    newsType.setRecStatus("I");
+                    newsTypeService.update(newsType);
                 }
-                newsType.setParentId(null);
-                newsType.setRecStatus("I");
-                newsTypeService.update(newsType);
-                return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+            }else{
+                ajaxJson = AjaxJson.failure("分类id不能为空");
             }
-            return AjaxJson.failure("分类id不能为空");
+            return ajaxJson;
         } catch (Exception e) {
-            logger.error("系统异常：", e);
+            LOGGER.error("系统异常：", e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }

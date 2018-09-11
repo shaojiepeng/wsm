@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="renderer" content="webkit"/>
@@ -28,8 +28,9 @@
     <form class="layui-form">
         <div class="layui-form-item">
             <div class="layui-inline">
-                <a shiro:hasPermission="operation:news:add" href="/operation/news/detail" type="button"
-                   class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+                <wsm:permission value="operation:news:add">
+                    <a href="/operation/news/detail" type="button" class="layui-btn layui-btn-sm"><i class="layui-icon">&#xe608;</i>新增</a>
+                </wsm:permission>
             </div>
         </div>
     </form>
@@ -56,10 +57,12 @@
         <td th:text="${#dates.format(news.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
         <td th:text="${#dates.format(news.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
         <td>
-            <a shiro:hasPermission="operation:news:edit" class="layui-btn layui-btn-xs" lay-event="detail"><i
-                    class="layui-icon">&#xe642;</i>编辑</a>
-            <a shiro:hasPermission="operation:news:remove" class="layui-btn layui-btn-xs layui-btn-danger"
-               lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+            <wsm:permission value="operation:news:edit">
+                <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe642;</i>编辑</a>
+            </wsm:permission>
+            <wsm:permission value="operation:news:remove">
+                <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete"><i class="layui-icon">&#xe640;</i>删除</a>
+            </wsm:permission>
         </td>
     </tr>
     </tbody>

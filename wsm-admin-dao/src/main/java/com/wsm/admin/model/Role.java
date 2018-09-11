@@ -12,9 +12,6 @@ import java.util.Set;
 @Where(clause = "rec_status='A'")
 public class Role extends BaseModel implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8093446477843493946L;
 	
 	@Column(length = 50)

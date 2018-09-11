@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ResourceTreeUtil {
+
+    public ResourceTreeUtil() {
+    }
 	
 	private List<ResourceTree> resultNodes = new ArrayList<ResourceTree>();//树形结构排序之后list内容
 	
-    private List<ResourceTree> nodes = new ArrayList<ResourceTree>();; //传入list参数
+    private List<ResourceTree> nodes = new ArrayList<ResourceTree>();//传入list参数
+
     public ResourceTreeUtil(List<Resource> nodesList) {//通过构造函数初始化
         for (Resource n : nodesList){
         	ResourceTree treeGrid = new ResourceTree();
@@ -27,9 +31,6 @@ public class ResourceTreeUtil {
         }
     }
     
-    public ResourceTreeUtil() {
-	}
-
 	/**
      * 构建树形结构list
      * @return 返回树形结构List列表

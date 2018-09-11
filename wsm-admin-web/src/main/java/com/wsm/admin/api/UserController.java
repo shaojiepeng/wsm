@@ -8,8 +8,8 @@ import com.wsm.common.api.BaseController;
 import com.wsm.common.util.AjaxJson;
 import com.wsm.common.util.ConstantUtils;
 import com.wsm.common.util.PasswordUtil;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
+import com.wsm.sso.config.Config;
+import com.wsm.sso.model.SSOUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,10 @@ import java.util.Set;
 @Controller
 @RequestMapping("/admin/user")
 public class UserController extends BaseController{
-	
-	private Logger logger = LoggerFactory.getLogger(getClass());
-	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 	@Autowired
 	private IUserService userService;
-	
 	@Autowired
 	private IRoleService roleService;
 	
@@ -53,9 +51,8 @@ public class UserController extends BaseController{
 	@RequestMapping(value = {"/detail"}, method = RequestMethod.GET)
 	public String detail(@RequestParam(required = false)String userId, Model model) throws Exception {
 		User dbUser = new User();
-		Subject subject = SecurityUtils.getSubject();
-		Object principal = subject.getPrincipal();
-        User user = (User) principal;
+		SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
+		User user = userService.findByUserName(ssoUser.getUserName());
         
         List<String> checkRoleIds = new ArrayList<>();
 		if (userId != null){
@@ -85,6 +82,7 @@ public class UserController extends BaseController{
     @ResponseBody
 	public AjaxJson save(User user, int[] roleIds, Model model) {
 		try {
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
 			if (!StringUtils.isEmpty(user.getId())){
 				User dbUser = userService.find(user.getId());
 				dbUser.setUserName(user.getUserName());
@@ -103,24 +101,25 @@ public class UserController extends BaseController{
 				userService.update(dbUser);
 			}else{
 				boolean exists = userService.existsByUserName(user.getUserName());
-				if (exists){
-					return AjaxJson.failure("该用户名已存在");
-				}
-				user.setPassword(PasswordUtil.encrypt("123456", user.getUserName(), PasswordUtil.getStaticSalt()));
-				
-				Set<Role> roles = null;
-				if (roleIds != null && roleIds.length > 0){
-					roles = new HashSet<>();
-					for (int i : roleIds){
-						roles.add(roleService.find(Long.valueOf(i)));
+				if (!exists){
+					user.setPassword(PasswordUtil.encrypt("123456", user.getUserName(), PasswordUtil.getStaticSalt()));
+
+					Set<Role> roles = null;
+					if (roleIds != null && roleIds.length > 0){
+						roles = new HashSet<>();
+						for (int i : roleIds){
+							roles.add(roleService.find(Long.valueOf(i)));
+						}
 					}
+					user.setRoles(roles);
+					userService.save(user);
+				}else{
+					ajaxJson = AjaxJson.failure("该用户名已存在");
 				}
-				user.setRoles(roles);
-				userService.save(user);
 			}
-			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+			return ajaxJson;
 		} catch (Exception e) {
-			logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
 			return AjaxJson.failure("系统异常：" + e);
 		}
 	}
@@ -132,15 +131,17 @@ public class UserController extends BaseController{
     @ResponseBody
     public AjaxJson resetPass(String userId, Model model) {
     	try {
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		if (!StringUtils.isEmpty(userId)){
     			User dbUser = userService.find(Long.valueOf(userId));
     			dbUser.setPassword(PasswordUtil.encrypt("123456", dbUser.getUserName(), PasswordUtil.getStaticSalt()));
     			userService.update(dbUser);
-    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
-    		}
-    		return AjaxJson.failure("用户id不能为空");
+    		}else{
+				ajaxJson = AjaxJson.failure("用户id不能为空");
+			}
+			return ajaxJson;
     	} catch (Exception e) {
-    		logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
     		return AjaxJson.failure("系统异常：" + e);
     	}
     }
@@ -151,14 +152,12 @@ public class UserController extends BaseController{
     @ResponseBody
     public AjaxJson clearCache(Model model) {
     	try {
-			Subject subject = SecurityUtils.getSubject();
-			Object principal = subject.getPrincipal();
-			User user = (User) principal;
-			User dbUser = userService.findByUserName(user.getUserName());
+			SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
+			User dbUser = userService.findByUserName(ssoUser.getUserName());
 			userService.clearCache(dbUser);
 			return AjaxJson.success("缓存已清除。");
     	} catch (Exception e) {
-    		logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
     		return AjaxJson.failure("系统异常：" + e);
     	}
     }
@@ -170,16 +169,18 @@ public class UserController extends BaseController{
     @ResponseBody
     public AjaxJson remove(String userId, Model model) {
     	try {
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
     		if (!StringUtils.isEmpty(userId)){
     			User dbUser = userService.find(Long.valueOf(userId));
     			dbUser.setRoles(null);
     			dbUser.setRecStatus("I");
     			userService.update(dbUser);
-    			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
-    		}
-    		return AjaxJson.failure("用户id不能为空");
+    		}else{
+				ajaxJson = AjaxJson.failure("用户id不能为空");
+			}
+			return ajaxJson;
     	} catch (Exception e) {
-    		logger.error("系统异常", e);
+			LOGGER.error("系统异常", e);
     		return AjaxJson.failure("系统异常：" + e);
     	}
     }
@@ -200,24 +201,21 @@ public class UserController extends BaseController{
 	@ResponseBody
 	public AjaxJson updatePwd(@RequestParam String oldPassword, @RequestParam String password){
 		try {
-			Subject subject = SecurityUtils.getSubject();
-			Object principal = subject.getPrincipal();
-			User user = (User) principal;
+			AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+			SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
+			User dbUser = userService.findByUserName(ssoUser.getUserName());
 
-			if(!PasswordUtil.encrypt(oldPassword, user.getUserName(), PasswordUtil.getStaticSalt()).equals(user.getPassword())){
-				return AjaxJson.failure("原密码错误");
+			if(!PasswordUtil.encrypt(oldPassword, dbUser.getUserName(), PasswordUtil.getStaticSalt()).equals(dbUser.getPassword())){
+				ajaxJson = AjaxJson.failure("原密码错误");
+			}else{
+				dbUser.setPassword(PasswordUtil.encrypt(password, dbUser.getUserName(), PasswordUtil.getStaticSalt()));
+				userService.update(dbUser);
 			}
-
-			user.setPassword(PasswordUtil.encrypt(password, user.getUserName(), PasswordUtil.getStaticSalt()));
-			userService.update(user);
-			return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+			return ajaxJson;
 		}catch (Exception e){
 			e.printStackTrace();
 			return AjaxJson.failure("操作异常");
 		}
 	}
 
-
-	
-	
 }

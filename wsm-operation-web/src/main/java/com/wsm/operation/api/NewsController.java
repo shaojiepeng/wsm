@@ -31,11 +31,10 @@ import java.util.List;
 @RequestMapping("/operation/news")
 public class NewsController extends BaseController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NewsController.class);
 
     @Autowired
     private INewsService newsService;
-
     @Autowired
     private INewsTypeService newsTypeService;
 
@@ -98,7 +97,7 @@ public class NewsController extends BaseController {
             }
             return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
         } catch (Exception e) {
-            logger.error("系统异常：", e);
+            LOGGER.error("系统异常：", e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }
@@ -110,15 +109,17 @@ public class NewsController extends BaseController {
     @ResponseBody
     public AjaxJson remove(String newsId, Model model) {
         try {
+            AjaxJson ajaxJson = AjaxJson.success(ConstantUtils.SUCCESS_MSG);
             if (!StringUtils.isEmpty(newsId)) {
                 News dbnews = newsService.find(Long.valueOf(newsId));
                 dbnews.setRecStatus("I");
                 newsService.update(dbnews);
-                return AjaxJson.success(ConstantUtils.SUCCESS_MSG);
+            }else {
+                ajaxJson = AjaxJson.failure("新闻id不能为空");
             }
-            return AjaxJson.failure("新闻id不能为空");
+            return ajaxJson;
         } catch (Exception e) {
-            logger.error("系统异常：", e);
+            LOGGER.error("系统异常：", e);
             return AjaxJson.failure("系统异常：" + e);
         }
     }

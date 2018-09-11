@@ -34,11 +34,15 @@
             <groupId>com.wsm</groupId>
             <artifactId>wsm-common-web</artifactId>
         </dependency>
-        <!-- spring cloud -->
         <dependency>
             <groupId>com.wsm</groupId>
-            <artifactId>wsm-admin-feign-consumer</artifactId>
+            <artifactId>wsm-admin-dao</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wsm</groupId>
+            <artifactId>wsm-admin-service</artifactId>
+        </dependency>
+        <!-- spring cloud -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka</artifactId>
@@ -77,10 +81,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.theborakompanioni</groupId>
-            <artifactId>thymeleaf-extras-shiro</artifactId>
-        </dependency>
         <!-- commons-lang3 -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -95,27 +95,11 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
-        <!-- JPA -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <!-- mysql -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
         <!-- kaptcha -->
         <dependency>
             <groupId>com.github.penggle</groupId>
             <artifactId>kaptcha</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -126,7 +110,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.wsm.admin.WsmAdminApplication</mainClass>
+                    <mainClass>com.wsm.WsmSsoServerApplication</mainClass>
                     <fork>true</fork>
                 </configuration>
                 <executions>

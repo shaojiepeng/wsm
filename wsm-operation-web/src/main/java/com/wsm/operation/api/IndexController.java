@@ -1,8 +1,8 @@
 package com.wsm.operation.api;
 
-import com.wsm.admin.feign.consumer.service.AdminResourceFeignConsumer;
-import com.wsm.admin.feign.consumer.service.AdminUserFeignConsumer;
-import com.wsm.admin.feign.consumer.vo.UserVo;
+import com.wsm.admin.feign.consumer.AdminResourceFeignConsumer;
+import com.wsm.admin.feign.consumer.AdminUserFeignConsumer;
+import com.wsm.admin.vo.UserVo;
 import com.wsm.common.api.BaseController;
 import com.wsm.sso.config.Config;
 import com.wsm.sso.model.SSOUser;
@@ -13,13 +13,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 public class IndexController extends BaseController{
 	
-	@Autowired
-	private HttpServletRequest request;
     @Autowired
     private AdminUserFeignConsumer userClient;
     @Autowired
@@ -59,12 +55,12 @@ public class IndexController extends BaseController{
      * @return
      */
 	@RequestMapping(value = {"/operation", "/operation/index"}, method = RequestMethod.GET)
-	public String index(HttpServletRequest request, Model model){
-        getResourcesByUserAndResourceKey(request, model, "operation");
+	public String index(Model model){
+        getResourcesByUserAndResourceKey(model, "operation");
 		return "index";
 	}
 
-    private void getResourcesByUserAndResourceKey(HttpServletRequest request, Model model, String resourceKey) {
+    private void getResourcesByUserAndResourceKey(Model model, String resourceKey) {
         SSOUser ssoUser = (SSOUser) request.getAttribute(Config.SSO_USER);
         UserVo userVo = userClient.getByUserName(ssoUser.getUserName());
 
